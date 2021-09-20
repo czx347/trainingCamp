@@ -2,7 +2,7 @@ const fs = require('fs');
 const http = require('http')
 
 http.createServer((request, response) => {
-  const {url, method} = request;
+  const {url, method, headers} = request;
   if(url === '/' && method === 'GET') {
     fs.readFile('src/day1/index.html',(err, data) => {
       if(err) {
@@ -15,6 +15,9 @@ http.createServer((request, response) => {
       response.setHeader('Content-Type', 'text/html');
       response.end(data);
     } )
+  }else if(method === 'GET' && headers.accept.indexOf('image/*' !== -1)) {
+
+    fs.createReadStream('./src/day1/' + url).pipe(response);
   }else {
     response.statusCode = 404;
     response.setHeader('Content-Type', 'text/html');
